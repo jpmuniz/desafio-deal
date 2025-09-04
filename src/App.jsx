@@ -1,7 +1,6 @@
 import React from 'react'
 import { Board } from './components/Board.jsx'
 import { Scoreboard } from './components/Scoreboard.jsx'
-//import Timer from './components/Timer.jsx'
 import { FloatingMenu }from './components/FloatingMenu.jsx'
 import { useTicTacToe } from './hooks/useTicTacToe.js'
 import { useTurnTimer } from './hooks/useTurnTimer.js'
