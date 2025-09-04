@@ -3,15 +3,12 @@ import { checkWinner, isDraw, chooseAutoMove } from '../lib/gameUtils'
 
 const STORAGE_KEY = 'ttt_scores_session_v1'
 
-/** @typedef {'X'|'O'} Player */
-
 const useTicTacToe = () => {
-  /** @type {Array<('X'|'O'|null)>} */
   const [board, setBoard] = useState(Array(9).fill(null))
-  /** @type {Player} */
-  const [player, setPlayer] = useState(/** @type {Player} */('X'))
-  const [winner, setWinner] = useState(/** @type {Player|null} */(null))
+  const [player, setPlayer] = useState('X')
+  const [winner, setWinner] = useState(null)
   const [draw, setDraw] = useState(false)
+  const [gameStarted, setGameStarted] = useState(false)
   const targetWins = 11
 
   const [scores, setScores] = useState(() => {
@@ -41,11 +38,12 @@ const useTicTacToe = () => {
   }, [board])
 
   const status = useMemo(() => {
-    if (winner) return 'won'
-    if (draw) return 'draw'
-    if (scores.X >= targetWins || scores.O >= targetWins) return 'matchOver'
-    return 'playing'
-  }, [winner, draw, scores])
+   if (!gameStarted) return 'waitingToStart' 
+   if (winner) return 'won'
+   if (draw) return 'draw'
+   if (scores.X >= targetWins || scores.O >= targetWins) return 'matchOver'
+   return 'playing'
+  }, [gameStarted, winner, draw, scores])
 
   const matchWinner = useMemo(() => {
     if (scores.X >= targetWins) return 'X'
@@ -53,44 +51,39 @@ const useTicTacToe = () => {
     return null
   }, [scores])
 
-  const internalPlace = (i) => {
+  const playAt = (number) => {
+    if (status !== 'playing' && status !== 'waitingToStart') return
+    if (board[number]) return
+    
+    if (!gameStarted) setGameStarted(true)
+    
     setBoard(prev => {
-      if (prev[i]) return prev
+      if (prev[number]) return prev
       const next = prev.slice()
-      next[i] = player
+      next[number] = player
       return next
     })
+    
+    setPlayer(prev => prev === 'X' ? 'O' : 'X')
   }
 
-  /**
-   * @param {number} number
-   */
-  const playAt = (number) => {
-    if (status !== 'playing') return
-    if (board[number]) return
-    internalPlace(number)
-    setPlayer(p => (p === 'X' ? 'O' : 'X'))
-  }
-
-  
   const autoPlay = () => {
     if (status !== 'playing') return
     const i = chooseAutoMove(board)
     if (i >= 0) {
-      internalPlace(i)
-      setPlayer(p => (p === 'X' ? 'O' : 'X'))
+      playAt(i) 
     }
+    setPlayer(player === 'X' ? 'O' : 'X')
   }
 
-  
   const nextRound = () => {
-    setBoard(Array(9).fill(null))
-    setPlayer('X')
-    setWinner(null)
-    setDraw(false)
+   setBoard(Array(9).fill(null))
+   setPlayer('X')
+   setWinner(null)
+   setDraw(false)
+   setGameStarted(false)
   }
 
-  
   const resetScores = () => {
     setScores({ X: 0, O: 0, draws: 0 })
     nextRound()
