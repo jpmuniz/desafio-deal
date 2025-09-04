@@ -5,7 +5,7 @@ const STORAGE_KEY = 'ttt_scores_session_v1'
 
 /** @typedef {'X'|'O'} Player */
 
-export const useTicTacToe = () => {
+const useTicTacToe = () => {
   /** @type {Array<('X'|'O'|null)>} */
   const [board, setBoard] = useState(Array(9).fill(null))
   /** @type {Player} */
@@ -111,3 +111,5 @@ export const useTicTacToe = () => {
     resetScores
   }
 }
+
+export { useTicTacToe }
