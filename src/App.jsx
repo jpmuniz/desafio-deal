@@ -39,7 +39,7 @@ const App = () => {
 
       <section className="panel">
         <div className="row" style={{justifyContent: 'space-between', alignItems: 'center'}}>
-          <div className={"status " + (game.status === 'won' ? 'win' : game.status === 'draw' ? 'draw' : game.status === 'matchOver' ? 'match' : '')}>
+          <div role='status' className={"status " + (game.status === 'won' ? 'win' : game.status === 'draw' ? 'draw' : game.status === 'matchOver' ? 'match' : '')}>
             {game.status === 'playing' && <>Vez de: <strong className={game.player === 'X' ? 'symbol-x' : 'symbol-o'}>{game.player}</strong></>}
             {game.status === 'won' && <>Vencedor da partida: <strong className={game.winner === 'X' ? 'symbol-x' : 'symbol-o'}>{game.winner}</strong></>}
             {game.status === 'draw' && <>Empate</>}
